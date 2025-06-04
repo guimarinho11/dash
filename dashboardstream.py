@@ -6,7 +6,7 @@ from datetime import datetime
 
 st.set_page_config(layout="wide", page_title="Dashboard de Despesas Semanal")
 
-data_dir = r"Y:\Em desenvolvimento - Matheus\Controle de despesas Semanal\tabela_origem"
+data_dir = "tabela_origem"
 
 current_date = datetime.now().date()
 formatted_date = current_date.strftime("%m/%Y")
