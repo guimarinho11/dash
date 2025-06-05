@@ -1,12 +1,47 @@
 import streamlit as st
 import pandas as pd
+from dotenv import load_dotenv
 import os
 import plotly.graph_objects as go
 from datetime import datetime
 
+# Sempre primeiro
 st.set_page_config(layout="wide", page_title="Dashboard de Despesas Semanal")
 
-data_dir = "tabela_origem"
+USERNAME = st.secrets["USERNAME"]
+PASSWORD = st.secrets["PASSWORD"]
+
+# Estado da sessão
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if 'login_attempted' not in st.session_state:
+    st.session_state.login_attempted = False
+
+# Função de login
+def login():
+    st.title("🔐 Login")
+    with st.form("login_form"):
+        user = st.text_input("Usuário")
+        password = st.text_input("Senha", type="password")
+        submitted = st.form_submit_button("Entrar")
+
+        if submitted:
+            if user.strip() == USERNAME and password.strip() == PASSWORD:
+                st.session_state.logged_in = True
+                st.rerun()  # Força a atualização da página
+            else:
+                st.session_state.login_attempted = True
+                st.rerun()  # Força a atualização para mostrar o erro
+
+    if st.session_state.login_attempted and not st.session_state.logged_in:
+        st.error("Usuário ou senha incorretos.")
+
+# Renderização condicional
+if not st.session_state.logged_in:
+    login()
+    st.stop()
+
+data_dir = r"Y:\Em desenvolvimento - Matheus\Controle de despesas Semanal\tabela_origem"
 
 current_date = datetime.now().date()
 formatted_date = current_date.strftime("%m/%Y")
